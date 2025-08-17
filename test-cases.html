@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>案例系统测试 - 创意无限广告公司</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .test-section {
+            padding: 2rem;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .test-button {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            opacity: 0.8;
+        }
+        .case-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>案例系统测试页面</h1>
+        
+        <div class="test-section">
+            <h2>数据加载测试</h2>
+            <button class="test-button" onclick="testDataLoading()">测试数据加载</button>
+            <div id="dataTestResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>案例详情测试</h2>
+            <button class="test-button" onclick="testCaseDetail()">测试案例详情</button>
+            <div id="caseDetailResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>分类筛选测试</h2>
+            <button class="test-button" onclick="testCategoryFilter()">测试分类筛选</button>
+            <div id="categoryFilterResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>随机选择测试</h2>
+            <button class="test-button" onclick="testRandomSelection()">测试随机选择</button>
+            <div id="randomSelectionResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>页面跳转测试</h2>
+            <button class="test-button" onclick="testPageNavigation()">测试页面跳转</button>
+            <div id="navigationResult"></div>
+        </div>
+    </div>
+
+    <script src="cases-data.js"></script>
+    <script>
+        function testDataLoading() {
+            const result = document.getElementById('dataTestResult');
+            try {
+                if (typeof getAllCases === 'function') {
+                    const cases = getAllCases();
+                    result.innerHTML = `
+                        <div class="case-info">
+                            <h3>✅ 数据加载成功</h3>
+                            <p>总案例数量: ${cases.length}</p>
+                            <p>案例ID列表: ${cases.map(c => c.id).join(', ')}</p>
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = '<div class="case-info"><h3>❌ 数据加载失败</h3><p>getAllCases函数未找到</p></div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="case-info"><h3>❌ 数据加载错误</h3><p>${error.message}</p></div>`;
+            }
+        }
+
+        function testCaseDetail() {
+            const result = document.getElementById('caseDetailResult');
+            try {
+                if (typeof getCaseById === 'function') {
+                    const case1 = getCaseById('case-1');
+                    if (case1) {
+                        result.innerHTML = `
+                            <div class="case-info">
+                                <h3>✅ 案例详情获取成功</h3>
+                                <p>案例标题: ${case1.title}</p>
+                                <p>案例分类: ${case1.categoryName}</p>
+                                <p>服务类型: ${case1.services.join(', ')}</p>
+                            </div>
+                        `;
+                    } else {
+                        result.innerHTML = '<div class="case-info"><h3>❌ 案例详情获取失败</h3><p>案例case-1未找到</p></div>';
+                    }
+                } else {
+                    result.innerHTML = '<div class="case-info"><h3>❌ 案例详情获取失败</h3><p>getCaseById函数未找到</p></div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="case-info"><h3>❌ 案例详情获取错误</h3><p>${error.message}</p></div>`;
+            }
+        }
+
+        function testCategoryFilter() {
+            const result = document.getElementById('categoryFilterResult');
+            try {
+                if (typeof getCasesByCategory === 'function') {
+                    const fashionCases = getCasesByCategory('fashion');
+                    const techCases = getCasesByCategory('tech');
+                    result.innerHTML = `
+                        <div class="case-info">
+                            <h3>✅ 分类筛选成功</h3>
+                            <p>时尚品牌案例数量: ${fashionCases.length}</p>
+                            <p>科技创新案例数量: ${techCases.length}</p>
+                            <p>时尚品牌案例: ${fashionCases.map(c => c.title).join(', ')}</p>
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = '<div class="case-info"><h3>❌ 分类筛选失败</h3><p>getCasesByCategory函数未找到</p></div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="case-info"><h3>❌ 分类筛选错误</h3><p>${error.message}</p></div>`;
+            }
+        }
+
+        function testRandomSelection() {
+            const result = document.getElementById('randomSelectionResult');
+            try {
+                if (typeof getAllCases === 'function') {
+                    const allCases = getAllCases();
+                    const shuffled = allCases.sort(() => 0.5 - Math.random());
+                    const selectedCases = shuffled.slice(0, 3);
+                    result.innerHTML = `
+                        <div class="case-info">
+                            <h3>✅ 随机选择成功</h3>
+                            <p>随机选择的3个案例:</p>
+                            <ul>
+                                ${selectedCases.map(c => `<li>${c.title} (${c.categoryName})</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = '<div class="case-info"><h3>❌ 随机选择失败</h3><p>getAllCases函数未找到</p></div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="case-info"><h3>❌ 随机选择错误</h3><p>${error.message}</p></div>`;
+            }
+        }
+
+        function testPageNavigation() {
+            const result = document.getElementById('navigationResult');
+            try {
+                const testUrl = 'case-detail.html?id=case-1';
+                result.innerHTML = `
+                    <div class="case-info">
+                        <h3>✅ 页面跳转测试</h3>
+                        <p>测试URL: ${testUrl}</p>
+                        <p>点击下面的链接测试跳转:</p>
+                        <a href="${testUrl}" class="test-button" target="_blank">跳转到案例详情页</a>
+                        <br><br>
+                        <a href="portfolio.html" class="test-button" target="_blank">跳转到Portfolio页面</a>
+                        <br><br>
+                        <a href="index.html" class="test-button" target="_blank">跳转到首页</a>
+                    </div>
+                `;
+            } catch (error) {
+                result.innerHTML = `<div class="case-info"><h3>❌ 页面跳转测试错误</h3><p>${error.message}</p></div>`;
+            }
+        }
+
+        // 页面加载时自动运行数据加载测试
+        window.addEventListener('load', function() {
+            setTimeout(testDataLoading, 500);
+        });
+    </script>
+</body>
+</html>

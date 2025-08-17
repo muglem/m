@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>功能测试页面 - 创意无限广告公司</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .test-section {
+            padding: 2rem;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .test-button {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            opacity: 0.8;
+        }
+        .test-result {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        .warning { color: #fbbf24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>网站功能测试页面</h1>
+        
+        <div class="test-section">
+            <h2>📊 案例系统测试</h2>
+            <button class="test-button" onclick="testCaseSystem()">测试案例系统</button>
+            <div id="caseTestResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🖼️ 轮播功能测试</h2>
+            <button class="test-button" onclick="testCarousel()">测试轮播功能</button>
+            <div id="carouselTestResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔗 页面跳转测试</h2>
+            <button class="test-button" onclick="testNavigation()">测试页面跳转</button>
+            <div id="navigationTestResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📱 响应式测试</h2>
+            <button class="test-button" onclick="testResponsive()">测试响应式</button>
+            <div id="responsiveTestResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 快速访问链接</h2>
+            <a href="index.html" class="test-button" target="_blank">首页</a>
+            <a href="portfolio.html" class="test-button" target="_blank">案例展示</a>
+            <a href="services.html" class="test-button" target="_blank">核心服务</a>
+            <a href="about.html" class="test-button" target="_blank">关于我们</a>
+            <a href="team.html" class="test-button" target="_blank">专业团队</a>
+            <a href="contact.html" class="test-button" target="_blank">联系我们</a>
+        </div>
+    </div>
+
+    <script src="cases-data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        function testCaseSystem() {
+            const result = document.getElementById('caseTestResult');
+            let html = '<div class="test-result">';
+            
+            try {
+                // 测试数据加载
+                if (typeof getAllCases === 'function') {
+                    const cases = getAllCases();
+                    html += `<p class="success">✅ 案例数据加载成功 (${cases.length}个案例)</p>`;
+                    
+                    // 测试案例详情
+                    const case1 = getCaseById('case-1');
+                    if (case1) {
+                        html += `<p class="success">✅ 案例详情获取成功: ${case1.title}</p>`;
+                    } else {
+                        html += `<p class="error">❌ 案例详情获取失败</p>`;
+                    }
+                    
+                    // 测试分类筛选
+                    const fashionCases = getCasesByCategory('fashion');
+                    html += `<p class="success">✅ 分类筛选成功: 时尚品牌(${fashionCases.length}个)</p>`;
+                    
+                } else {
+                    html += `<p class="error">❌ 案例系统未加载</p>`;
+                }
+                
+                // 测试动态加载函数
+                if (typeof loadPortfolioCases === 'function' && typeof loadHomePageCases === 'function') {
+                    html += `<p class="success">✅ 动态加载函数存在</p>`;
+                } else {
+                    html += `<p class="error">❌ 动态加载函数缺失</p>`;
+                }
+                
+            } catch (error) {
+                html += `<p class="error">❌ 测试出错: ${error.message}</p>`;
+            }
+            
+            html += '</div>';
+            result.innerHTML = html;
+        }
+
+        function testCarousel() {
+            const result = document.getElementById('carouselTestResult');
+            let html = '<div class="test-result">';
+            
+            try {
+                // 测试轮播函数
+                if (typeof changeSlide === 'function' && typeof currentSlide === 'function') {
+                    html += `<p class="success">✅ 轮播控制函数存在</p>`;
+                } else {
+                    html += `<p class="error">❌ 轮播控制函数缺失</p>`;
+                }
+                
+                // 测试轮播状态管理
+                if (typeof carouselStates !== 'undefined') {
+                    html += `<p class="success">✅ 轮播状态管理正常</p>`;
+                } else {
+                    html += `<p class="error">❌ 轮播状态管理异常</p>`;
+                }
+                
+                html += `<p class="warning">⚠️ 轮播功能需要在services.html页面测试</p>`;
+                
+            } catch (error) {
+                html += `<p class="error">❌ 测试出错: ${error.message}</p>`;
+            }
+            
+            html += '</div>';
+            result.innerHTML = html;
+        }
+
+        function testNavigation() {
+            const result = document.getElementById('navigationTestResult');
+            let html = '<div class="test-result">';
+            
+            try {
+                // 测试页面跳转链接
+                const testLinks = [
+                    { name: '首页案例', url: 'index.html' },
+                    { name: '案例展示', url: 'portfolio.html' },
+                    { name: '核心服务', url: 'services.html' },
+                    { name: '合作流程', url: 'services.html#workflow' },
+                    { name: '案例详情', url: 'case-detail.html?id=case-1' }
+                ];
+                
+                html += '<p class="success">✅ 页面跳转链接测试:</p>';
+                testLinks.forEach(link => {
+                    html += `<p>• ${link.name}: <a href="${link.url}" target="_blank" style="color: #8b5cf6;">${link.url}</a></p>`;
+                });
+                
+            } catch (error) {
+                html += `<p class="error">❌ 测试出错: ${error.message}</p>`;
+            }
+            
+            html += '</div>';
+            result.innerHTML = html;
+        }
+
+        function testResponsive() {
+            const result = document.getElementById('responsiveTestResult');
+            let html = '<div class="test-result">';
+            
+            try {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                
+                html += `<p class="success">✅ 当前屏幕尺寸: ${width} x ${height}</p>`;
+                
+                if (width < 768) {
+                    html += `<p class="warning">📱 移动端视图 (建议测试触摸功能)</p>`;
+                } else if (width < 1024) {
+                    html += `<p class="warning">📱 平板端视图</p>`;
+                } else {
+                    html += `<p class="success">💻 桌面端视图</p>`;
+                }
+                
+                html += `<p class="warning">⚠️ 请调整浏览器窗口大小测试响应式效果</p>`;
+                
+            } catch (error) {
+                html += `<p class="error">❌ 测试出错: ${error.message}</p>`;
+            }
+            
+            html += '</div>';
+            result.innerHTML = html;
+        }
+
+        // 页面加载时自动运行测试
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                testCaseSystem();
+                testCarousel();
+                testNavigation();
+                testResponsive();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
